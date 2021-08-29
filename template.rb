@@ -152,9 +152,6 @@ def add_hotwire
 end
 
 def copy_templates
-  # Rename application.css to application.scss
-  mv "app/assets/stylesheets/application.css", "app/assets/stylesheets/application.scss"
-
   copy_file "Procfile"
   copy_file "Procfile.dev"
   copy_file ".foreman"
