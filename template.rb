@@ -53,7 +53,6 @@ def add_gems
   end
   gem "devise_masquerade", "~> 1.3"
   gem "hotwire-rails"
-  gem "image_processing"
   gem "name_of_person", "~> 1.1"
   gem "omniauth-facebook", "~> 8.0"
   gem "omniauth-github", "~> 2.0"
@@ -61,6 +60,11 @@ def add_gems
   gem "pundit", "~> 2.1"
   gem "sidekiq", "~> 6.2"
   gem "responders", github: "heartcombo/responders"
+
+  gem_group :development do
+    gem "rubocop", "~> 1.15"
+    gem "rubocop-rails", "~> 2.10", ">= 2.10.1"
+  end
 
   if rails_5?
     gsub_file "Gemfile", /gem 'sqlite3'/, "gem 'sqlite3', '~> 1.3.0'"
@@ -107,9 +111,9 @@ def add_users
 
   inject_into_file "config/initializers/devise.rb", after: "# ==> Warden configuration\n" do
     <<-RUBY
-      config.warden do |manager|
-        manager.failure_app = TurboFailureApp
-      end
+  config.warden do |manager|
+    manager.failure_app = TurboFailureApp
+  end
     RUBY
   end
 
@@ -148,11 +152,13 @@ def add_hotwire
 end
 
 def copy_templates
-  remove_file "app/assets/stylesheets/application.css"
+  # Rename application.css to application.scss
+  mv "app/assets/stylesheets/application.css", "app/assets/stylesheets/application.scss"
 
   copy_file "Procfile"
   copy_file "Procfile.dev"
   copy_file ".foreman"
+  copy_file ".rubocop.todo.yml", ".rubocop.yml"
 
   directory "app", force: true
   directory "config", force: true
@@ -181,11 +187,11 @@ def add_multiple_authentication
   content = \
     <<~RUBY
       env_creds = Rails.application.credentials[Rails.env.to_sym] || {}
-      %i[facebook twitter github].each do |provider|
-        if options = env_creds[provider]
-          config.omniauth provider, options[:app_id], options[:app_secret], options.fetch(:options, {})
+        %i[facebook twitter github].each do |provider|
+          if options = env_creds[provider]
+            config.omniauth provider, options[:app_id], options[:app_secret], options.fetch(:options, {})
+          end
         end
-      end
     RUBY
 
   insert_into_file "config/initializers/devise.rb", "  #{content}\n\n", before: "  # ==> Warden configuration"
