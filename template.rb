@@ -201,6 +201,23 @@ def stop_spring
   run "spring stop"
 end
 
+def add_javascript
+  # Use specific version due to this issue https://github.com/webpack/webpack-cli/issues/2272
+  run "yarn add webpack-dev-server@3.11.2 -D"
+
+  content = <<~JS
+const webpack = require('webpack')
+environment.plugins.append(
+  'Provide',
+  new webpack.ProvidePlugin({
+    ApplicationController: ['application_controller', 'default'],
+  })
+)
+  JS
+
+  insert_into_file "config/webpack/environment.js", "#{content}\n", before: "module.exports = environment"
+end
+
 # Main setup
 add_template_repository_to_source_path
 add_gems
@@ -214,6 +231,7 @@ after_bundle do
   add_multiple_authentication
   add_sidekiq
   add_hotwire
+  add_javascript
 
   copy_templates
 

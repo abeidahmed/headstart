@@ -25,6 +25,9 @@ Layout/EmptyLinesAroundAttributeAccessor:
   StyleGuide: '#empty-lines-around-attribute-accessor'
   Enabled: true
 
+Layout/HeredocIndentation:
+  Enabled: false
+
 Layout/LineLength:
   Exclude:
     - 'test/**/*'
