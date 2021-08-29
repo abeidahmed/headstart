@@ -7,14 +7,14 @@ require "shellwords"
 # invoked remotely via HTTP, that means the files are not present locally.
 # In that case, use `git clone` to download them to a local temporary dir.
 def add_template_repository_to_source_path
-  if __FILE__ =~ %r{\Ahttps?://}
+  if __FILE__.match?(%r{\Ahttps?://})
     require "tmpdir"
     source_paths.unshift(tempdir = Dir.mktmpdir("headstart-"))
     at_exit { FileUtils.remove_entry(tempdir) }
     git clone: [
       "--quiet",
       "https://github.com/abeidahmed/headstart.git",
-      tempdir,
+      tempdir
     ].map(&:shellescape).join(" ")
 
     if (branch = __FILE__[%r{headstart/(.+)/template.rb}, 1])
@@ -62,8 +62,7 @@ def add_gems
   gem "responders", github: "heartcombo/responders"
 
   gem_group :development do
-    gem "rubocop", "~> 1.15"
-    gem "rubocop-rails", "~> 2.10", ">= 2.10.1"
+    gem "standard"
   end
 
   if rails_5?
@@ -103,7 +102,7 @@ def add_users
           end
         end
         def skip_format?
-          %w(html turbo_stream */*).include? request_format.to_s
+          %w[html turbo_stream */*].include? request_format.to_s
         end
       end
     RUBY
@@ -155,7 +154,6 @@ def copy_templates
   copy_file "Procfile"
   copy_file "Procfile.dev"
   copy_file ".foreman"
-  copy_file ".rubocop.todo.yml", ".rubocop.yml"
 
   directory "app", force: true
   directory "config", force: true
@@ -166,12 +164,11 @@ def add_sidekiq
 
   insert_into_file "config/routes.rb", "require 'sidekiq/web'\n\n", before: "Rails.application.routes.draw do"
 
-  content = \
-    <<~RUBY
-      authenticate :user, lambda { |u| u.admin? } do
-        mount Sidekiq::Web => "/sidekiq"
-      end
-    RUBY
+  content = <<~RUBY
+    authenticate :user, lambda { |u| u.admin? } do
+      mount Sidekiq::Web => "/sidekiq"
+    end
+  RUBY
 
   insert_into_file "config/routes.rb", "#{content}\n", after: "Rails.application.routes.draw do\n"
 end
@@ -181,15 +178,14 @@ def add_multiple_authentication
 
   generate "model Service user:references provider uid access_token access_token_secret refresh_token expires_at:datetime auth:text"
 
-  content = \
-    <<~RUBY
-      env_creds = Rails.application.credentials[Rails.env.to_sym] || {}
-        %i[facebook twitter github].each do |provider|
-          if options = env_creds[provider]
-            config.omniauth provider, options[:app_id], options[:app_secret], options.fetch(:options, {})
-          end
+  content = <<~RUBY
+    env_creds = Rails.application.credentials[Rails.env.to_sym] || {}
+      %i[facebook twitter github].each do |provider|
+        if options = env_creds[provider]
+          config.omniauth provider, options[:app_id], options[:app_secret], options.fetch(:options, {})
         end
-    RUBY
+      end
+  RUBY
 
   insert_into_file "config/initializers/devise.rb", "  #{content}\n\n", before: "  # ==> Warden configuration"
 end
@@ -203,13 +199,13 @@ def add_javascript
   run "yarn add webpack-dev-server@3.11.2 -D"
 
   content = <<~JS
-const webpack = require('webpack')
-environment.plugins.append(
-  'Provide',
-  new webpack.ProvidePlugin({
-    ApplicationController: ['application_controller', 'default'],
-  })
-)
+    const webpack = require('webpack')
+    environment.plugins.append(
+      'Provide',
+      new webpack.ProvidePlugin({
+        ApplicationController: ['application_controller', 'default'],
+      })
+    )
   JS
 
   insert_into_file "config/webpack/environment.js", "#{content}\n", before: "module.exports = environment"
@@ -240,7 +236,7 @@ after_bundle do
     # git commit will fail if user.email is not configured
     begin
       git commit: %( -m 'Initial commit' )
-    rescue StandardError => e
+    rescue => e
       puts e.message
     end
   end
