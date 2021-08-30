@@ -157,7 +157,6 @@ def copy_templates
   copy_file ".foreman"
 
   directory "app", force: true
-  directory "config", force: true
 end
 
 def add_sidekiq
