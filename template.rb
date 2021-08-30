@@ -147,6 +147,17 @@ end
 
 def add_hotwire
   rails_command "hotwire:install"
+  rails_command "turbo:install:redis"
+
+  unless rails_7?
+    run "yarn remove turbolinks @rails/ujs"
+
+    js_file = "app/javascript/packs/application.js"
+    gsub_file(js_file, /import Rails from "@rails\/ujs"\n/, "")
+    gsub_file(js_file, /import Turbolinks from "turbolinks"\n/, "")
+    gsub_file(js_file, /Rails\.start\(\)\n/, "")
+    gsub_file(js_file, /Turbolinks\.start\(\)\n/, "")
+  end
 end
 
 def copy_templates
@@ -157,7 +168,6 @@ def copy_templates
   copy_file ".foreman"
 
   directory "app", force: true
-  directory "config", force: true
 end
 
 def add_sidekiq
@@ -182,7 +192,8 @@ def add_multiple_authentication
   content = <<~RUBY
     env_creds = Rails.application.credentials[Rails.env.to_sym] || {}
       %i[facebook twitter github].each do |provider|
-        if options = env_creds[provider]
+
+        if (options = env_creds[provider])
           config.omniauth provider, options[:app_id], options[:app_secret], options.fetch(:options, {})
         end
       end
@@ -254,6 +265,7 @@ after_bundle do
   say "  cd #{original_app_name}"
   say
   say "  Update config/database.yml with your database credentials"
+  say "  To fix linter errors run bundle exec standardrb --fix"
   say
   say "  rails db:create db:migrate"
   say "  gem install foreman"
