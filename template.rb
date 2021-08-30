@@ -248,6 +248,9 @@ after_bundle do
     end
   end
 
+  say "Standardizing your application", :blue
+  run "bundle exec standardrb --fix"
+
   say
   say "Headstart app successfully created!", :blue
   say
