@@ -213,7 +213,7 @@ def add_javascript
 end
 
 def add_primer_css
-  run "yarn install @primer/css"
+  run "yarn add @primer/css"
 end
 
 # Main setup
