@@ -237,6 +237,9 @@ after_bundle do
 
   rails_command "active_storage:install"
 
+  say "Standardizing your application", :blue
+  run "bundle exec standardrb --fix"
+
   unless ENV["SKIP_GIT"]
     git :init
     git add: "."
@@ -247,9 +250,6 @@ after_bundle do
       puts e.message
     end
   end
-
-  say "Standardizing your application", :blue
-  run "bundle exec standardrb --fix"
 
   say
   say "Headstart app successfully created!", :blue
