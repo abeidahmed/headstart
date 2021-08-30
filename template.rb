@@ -182,7 +182,8 @@ def add_multiple_authentication
   content = <<~RUBY
     env_creds = Rails.application.credentials[Rails.env.to_sym] || {}
       %i[facebook twitter github].each do |provider|
-        if options = env_creds[provider]
+
+        if (options = env_creds[provider])
           config.omniauth provider, options[:app_id], options[:app_secret], options.fetch(:options, {})
         end
       end
