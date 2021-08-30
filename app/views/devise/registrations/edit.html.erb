@@ -1,0 +1,90 @@
+<%= render "devise/shared/layout", title: "Update your account" do %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+    <div class="form-group">
+      <div class="form-group-header">
+        <%= f.label :name %>
+      </div>
+
+      <div class="form-group-body">
+        <%= f.text_field :name,
+          class: "form-control form-control-large width-full",
+          autofocus: true,
+          autocomplete: "name",
+          required: true %>
+
+        <%= render "devise/shared/form_error", error_type: :first_name %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group-header">
+        <%= f.label :email %>
+      </div>
+
+      <div class="form-group-body">
+        <%= f.email_field :email,
+          class: "form-control form-control-large width-full",
+          autocomplete: "email",
+          required: true %>
+
+        <%= render "devise/shared/form_error", error_type: :email %>
+      </div>
+    </div>
+
+    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+      <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+    <% end %>
+
+    <div class="form-group">
+      <div class="form-group-header">
+        <%= f.label :password %> <span>(leave blank if you don't want to change it)</span>
+      </div>
+
+      <div class="form-group-body">
+        <%= f.password_field :password,
+          class: "form-control form-control-large width-full",
+          autocomplete: "new-password" %>
+
+        <%= render "devise/shared/form_error", error_type: :password %>
+      </div>
+
+      <% if @minimum_password_length %>
+        <em><%= @minimum_password_length %> characters minimum</em>
+      <% end %>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group-header">
+        <%= f.label :password_confirmation %>
+      </div>
+
+      <div class="form-group-body">
+        <%= f.password_field :password_confirmation,
+          class: "form-control form-control-large width-full",
+          autocomplete: "new-password" %>
+
+        <%= render "devise/shared/form_error", error_type: :password_confirmation %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group-header">
+        <%= f.label :current_password %>
+      </div>
+
+      <div class="form-group-body">
+        <%= f.password_field :current_password,
+          class: "form-control form-control-large width-full",
+          autocomplete: "current-password" %>
+      </div>
+    </div>
+
+    <%= f.submit "Update", class: "btn btn-primary btn-large btn-block" %>
+  <% end %>
+
+  <%= button_to "Cancel my account",
+    registration_path(resource_name),
+    class: "btn btn-danger btn-block btn-large mt-2",
+    data: { confirm: "Are you sure?" },
+    method: :delete %>
+<% end %>

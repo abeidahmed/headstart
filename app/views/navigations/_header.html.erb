@@ -1,0 +1,35 @@
+<div class="Header">
+  <div class="Header-item Header-item--full">
+    <%= link_to "Headstart template", root_path, class: "Header-link" %>
+  </div>
+
+  <% if user_signed_in? %>
+    <div class="Header-item mr-0">
+      <details class="dropdown details-reset details-overlay d-inline-block">
+        <summary aria-haspopup="true">
+          <img class="avatar avatar-4 circle" alt="jonrohan" src="https://github.com/jonrohan.png?v=3&s=56" />
+        </summary>
+
+        <ul class="dropdown-menu dropdown-menu-sw">
+          <li>
+            <%= link_to "Profile settings", edit_user_registration_path, class: "dropdown-item" %>
+          </li>
+
+          <li class="dropdown-divider"></li>
+
+          <li>
+            <%= link_to "Sign out", destroy_user_session_path, method: :delete, class: "dropdown-item" %>
+          </li>
+        </ul>
+      </details>
+    </div>
+  <% else %>
+    <div class="Header-item">
+      <%= link_to "Log in", new_user_session_path, class: "btn" %>
+    </div>
+
+    <div class="Header-item mr-0">
+      <%= link_to "Sign up", new_user_registration_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

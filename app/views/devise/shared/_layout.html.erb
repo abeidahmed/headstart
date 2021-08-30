@@ -1,0 +1,13 @@
+<main class="py-8 px-3">
+  <h1 class="text-center"><%= title %></h1>
+
+  <div class="d-flex flex-justify-center mt-3">
+    <div class="max-w-md width-full Box Box--spacious color-bg-tertiary">
+      <div class="Box-body">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+
+  <%= yield :footer %>
+</main>

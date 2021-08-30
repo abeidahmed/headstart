@@ -86,7 +86,6 @@ end
 def add_users
   route "root to: 'home#index'"
   generate "devise:install"
-  generate "devise:views"
 
   # Configure Devise to handle TURBO_STREAM requests like HTML requests
   inject_into_file "config/initializers/devise.rb", "  config.navigational_formats = ['/', :html, :turbo_stream]", after: "Devise.setup do |config|\n"
@@ -151,6 +150,8 @@ def add_hotwire
 end
 
 def copy_templates
+  remove_file "app/assets/stylesheets/application.css"
+
   copy_file "Procfile"
   copy_file "Procfile.dev"
   copy_file ".foreman"
@@ -211,6 +212,10 @@ def add_javascript
   insert_into_file "config/webpack/environment.js", "#{content}\n", before: "module.exports = environment"
 end
 
+def add_primer_css
+  run "yarn add @primer/css"
+end
+
 # Main setup
 add_template_repository_to_source_path
 add_gems
@@ -225,6 +230,7 @@ after_bundle do
   add_sidekiq
   add_hotwire
   add_javascript
+  add_primer_css
 
   copy_templates
 

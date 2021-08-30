@@ -1,0 +1,48 @@
+<%= render "devise/shared/layout", title: "Change your title" do %>
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+    <%= f.hidden_field :reset_password_token %>
+
+    <div class="form-group">
+      <div class="form-group-header d-flex flex-items-center">
+        <%= f.label :password, "New password" %>
+
+        <% if @minimum_password_length %>
+          <span>(min. <%= @minimum_password_length %> characters)</span>
+        <% end %>
+      </div>
+
+      <div class="form-group-body">
+        <%= f.password_field :password,
+          class: "form-control form-control-large width-full",
+          autofocus: true,
+          autocomplete: "new-password",
+          required: true %>
+
+        <%= render "devise/shared/form_error", error_type: :password %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group-header">
+        <%= f.label :password_confirmation, "Confirm new password" %>
+      </div>
+
+      <div class="form-group-body">
+        <%= f.password_field :password_confirmation,
+          class: "form-control form-control-large width-full",
+          autocomplete: "new-password",
+          required: true %>
+
+        <%= render "devise/shared/form_error", error_type: :password_confirmation %>
+      </div>
+    </div>
+
+    <%= f.submit "Change my password", class: "btn btn-primary btn-block btn-large" %>
+  <% end %>
+
+  <%= content_for(:footer) do %>
+    <div class="text-center mt-4">
+      <%= render "devise/shared/links" %>
+    </div>
+  <% end %>
+<% end %>
