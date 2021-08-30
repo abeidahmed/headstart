@@ -151,6 +151,8 @@ def add_hotwire
 end
 
 def copy_templates
+  remove_file "app/assets/stylesheets/application.css"
+
   copy_file "Procfile"
   copy_file "Procfile.dev"
   copy_file ".foreman"
@@ -211,6 +213,10 @@ def add_javascript
   insert_into_file "config/webpack/environment.js", "#{content}\n", before: "module.exports = environment"
 end
 
+def add_primer_css
+  run "yarn install @primer/css"
+end
+
 # Main setup
 add_template_repository_to_source_path
 add_gems
@@ -225,6 +231,7 @@ after_bundle do
   add_sidekiq
   add_hotwire
   add_javascript
+  add_primer_css
 
   copy_templates
 

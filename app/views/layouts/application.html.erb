@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-color-mode="dark" data-light-theme="light" data-dark-theme="dark">
   <head>
     <%= render "shared/head" %>
   </head>
 
   <body>
+    <%= render "navigations/header" %>
+    <%= render "shared/notice" %>
     <%= yield %>
   </body>
 </html>
