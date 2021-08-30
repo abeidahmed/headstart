@@ -86,7 +86,6 @@ end
 def add_users
   route "root to: 'home#index'"
   generate "devise:install"
-  generate "devise:views"
 
   # Configure Devise to handle TURBO_STREAM requests like HTML requests
   inject_into_file "config/initializers/devise.rb", "  config.navigational_formats = ['/', :html, :turbo_stream]", after: "Devise.setup do |config|\n"
