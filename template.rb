@@ -147,6 +147,17 @@ end
 
 def add_hotwire
   rails_command "hotwire:install"
+  rails_command "turbo:install:redis"
+
+  unless rails_7?
+    run "yarn remove turbolinks @rails/ujs"
+
+    js_file = "app/javascript/packs/application.js"
+    gsub_file(js_file, /import Rails from "@rails\/ujs"\n/, "")
+    gsub_file(js_file, /import Turbolinks from "turbolinks"\n/, "")
+    gsub_file(js_file, /Rails\.start\(\)\n/, "")
+    gsub_file(js_file, /Turbolinks\.start\(\)\n/, "")
+  end
 end
 
 def copy_templates
@@ -236,9 +247,6 @@ after_bundle do
 
   rails_command "active_storage:install"
 
-  say "Standardizing your application", :blue
-  run "bundle exec standardrb --fix"
-
   unless ENV["SKIP_GIT"]
     git :init
     git add: "."
@@ -257,6 +265,7 @@ after_bundle do
   say "  cd #{original_app_name}"
   say
   say "  Update config/database.yml with your database credentials"
+  say "  To fix linter errors run bundle exec standardrb --fix"
   say
   say "  rails db:create db:migrate"
   say "  gem install foreman"
