@@ -5,4 +5,6 @@ class User < ApplicationRecord
     :recoverable, :rememberable, :validatable, :omniauthable
 
   has_person_name
+
+  validates :first_name, presence: true
 end
